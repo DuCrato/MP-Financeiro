@@ -18,6 +18,37 @@ Projeto Full Stack desenvolvido para o processo seletivo. O sistema permite o ca
 
 ### 1. Backend (.NET)
 
-1. Entre na pasta do backend:
    ```bash
    cd backend/MPTeste.API
+   ```
+   ```bash
+   dotnet restore
+   ```
+   ```bash
+   dotnet run
+   ```
+
+### 2. Frontend (React)
+
+   ```bash
+   cd frontend
+   ```
+   ```bash
+   npm install
+   ```
+   ```bash
+   npm run dev
+   ```
+
+## 📋 Funcionalidades
+- Cadastro de pessoas
+- Cadastro de categorias
+- Lançamento de receitas e despesas
+- Cálculo automático de saldo por pessoa
+- Visualização de totais consolidados
+
+## 🧠 Decisões Técnicas
+- Utilização de DTOs para evitar exposição direta das entidades
+- Relatórios agregados calculados no backend para reduzir lógica no frontend
+- Separação clara entre Controller, Service e Repository
+   
