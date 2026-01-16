@@ -1,0 +1,6 @@
+@MPTeste.API_HostAddress = http://localhost:5028
+
+GET {{MPTeste.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
