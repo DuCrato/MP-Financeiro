@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useApi } from "../hooks/useApi";
+import { logger } from "../services/logger";
 import type { RelatorioPessoas } from "../types";
 import {
     Table,
@@ -10,6 +12,7 @@ import {
     Card,
     Row,
     Col,
+    Button,
 } from "react-bootstrap";
 import NovaPessoaModal from "./NovaPessoaModal";
 import NovaTransacaoModal from "./NovaTransacaoModal";
@@ -21,10 +24,7 @@ import NovaTransacaoModal from "./NovaTransacaoModal";
  * - Permitir cadastro de pessoas e transações
  */
 const PessoaList = () => {
-
-    const [relatorio, setRelatorio] = useState<RelatorioPessoas | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const { data: relatorio, loading, error, execute } = useApi<RelatorioPessoas>(null);
     const [showModal, setShowModal] = useState(false);
     const [showTransacaoModal, setShowTransacaoModal] = useState(false);
     const [selectedPessoaId, setSelectedPessoaId] = useState<number | null>(null);
@@ -39,20 +39,9 @@ const PessoaList = () => {
     /**
      * Busca o relatório financeiro por pessoa no backend
      */
-    const carregarDados = () => {
-        api
-            .get<RelatorioPessoas>("/pessoas/totais")
-            .then((response) => {
-                setRelatorio(response.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError(
-                    "Erro ao carregar dados. Verifique se o Backend está rodando."
-                );
-                setLoading(false);
-            });
+    const carregarDados = async () => {
+        logger.info('Carregando dados de pessoas');
+        await execute(api.get<RelatorioPessoas>("/pessoas/totais"), 'Carregamento de Relatório');
     };
 
     /**
@@ -72,7 +61,7 @@ const PessoaList = () => {
         return (
             <Container className="mt-5 text-center">
                 <Spinner animation="border" variant="primary" />
-                <p>Carregando dados...</p>
+                <p className="mt-3">Carregando dados...</p>
             </Container>
         );
     }
@@ -83,7 +72,12 @@ const PessoaList = () => {
     if (error) {
         return (
             <Container className="mt-5">
-                <Alert variant="danger">{error}</Alert>
+                <Alert variant="danger" className="d-flex justify-content-between align-items-center">
+                    <span>{error}</span>
+                    <Button variant="outline-danger" size="sm" onClick={carregarDados}>
+                        Tentar Novamente
+                    </Button>
+                </Alert>
             </Container>
         );
     }
@@ -93,13 +87,13 @@ const PessoaList = () => {
 
             {/* Cabeçalho da tela */}
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="mb-0">Gestão Financeira</h2>
-                <button
-                    className="btn btn-primary"
+                <h2 className="mb-0">💰 Gestão Financeira</h2>
+                <Button
+                    variant="primary"
                     onClick={() => setShowModal(true)}
                 >
                     + Nova Pessoa
-                </button>
+                </Button>
             </div>
 
             {/* Cards de resumo geral */}
