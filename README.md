@@ -334,10 +334,10 @@ Este projeto segue **Conventional Commits**:
 
 ## 👨‍💻 Autor
 
-**Willian Soares**
+**Willian Mateus**
 
 - GitHub: [@DuCrato](https://github.com/DuCrato)
-- Email: seu@email.com
+- Email: williamanderson1994@hotmail.com
 
 ---
 
