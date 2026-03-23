@@ -1,21 +1,31 @@
 using Microsoft.EntityFrameworkCore;
 using MPTeste.API.Data;
+using MPTeste.API.Middleware;
 using MPTeste.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuração de Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // Configuração do Banco de Dados
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Configuração de CORS com origens específicas (seguro)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTudo", policy =>
+    options.AddPolicy("PermitirOrigesLocais", policy =>
     {
-        policy.AllowAnyOrigin()
+        var origins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? ["http://localhost:3000"];
+
+        policy.WithOrigins(origins)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -33,13 +43,16 @@ builder.Services.AddScoped<TransacaoService>();
 
 var app = builder.Build();
 
+// Middleware de tratamento global de exceções
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseCors("PermitirTudo");
+app.UseCors("PermitirOrigesLocais");
 
 app.UseHttpsRedirection();
 
