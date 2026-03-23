@@ -51,16 +51,8 @@ namespace MPTeste.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletarPessoa(int id)
         {
-            try
-            {
-                await service.ExcluirAsync(id);
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await service.ExcluirAsync(id);
+            return NoContent();
         }
     }
 }

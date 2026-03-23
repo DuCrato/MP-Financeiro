@@ -29,16 +29,8 @@ namespace MPTeste.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                var response = await service.CriarAsync(request);
-
-                return Created(string.Empty, response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = await service.CriarAsync(request);
+            return Created(string.Empty, response);
         }
     }
 }

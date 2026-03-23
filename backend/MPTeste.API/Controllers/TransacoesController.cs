@@ -25,16 +25,11 @@ namespace MPTeste.API.Controllers
         [HttpPost]
         public async Task<ActionResult<TransacaoResponseDto>> CriarTransacao(TransacaoRequestDto request)
         {
-            try
-            {
-                var response = await service.CriarAsync(request);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                return Created(string.Empty, response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var response = await service.CriarAsync(request);
+            return Created(string.Empty, response);
         }
     }
 }
