@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MPTeste.API.Data;
 using MPTeste.API.DTOs;
 using MPTeste.API.Enums;
@@ -30,7 +32,8 @@ namespace MPTeste.Tests
             context.Categorias.Add(new Categoria { Descricao = "Alimentação", Finalidade = FinalidadeCategoria.Despesa });
             await context.SaveChangesAsync();
 
-            var service = new CategoriaService(context);
+            var mockLogger = new Mock<ILogger<CategoriaService>>();
+            var service = new CategoriaService(context, mockLogger.Object);
             var request = new CategoriaRequestDto { Descricao = "Alimentação", Finalidade = FinalidadeCategoria.Despesa };
 
             // Act & Assert
@@ -43,7 +46,8 @@ namespace MPTeste.Tests
         {
             // Arrange
             var context = GetDatabaseContext();
-            var service = new CategoriaService(context);
+            var mockLogger = new Mock<ILogger<CategoriaService>>();
+            var service = new CategoriaService(context, mockLogger.Object);
             var request = new CategoriaRequestDto { Descricao = "Lazer", Finalidade = FinalidadeCategoria.Despesa };
 
             // Act

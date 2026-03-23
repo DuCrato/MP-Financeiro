@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MPTeste.API.Data;
 using MPTeste.API.DTOs;
 using MPTeste.API.Enums;
@@ -35,7 +37,8 @@ namespace MPTeste.Tests
             context.Categorias.Add(categoria);
             await context.SaveChangesAsync();
 
-            var service = new TransacaoService(context);
+            var mockLogger = new Mock<ILogger<TransacaoService>>();
+            var service = new TransacaoService(context, mockLogger.Object);
 
             var request = new TransacaoRequestDto
             {
@@ -47,8 +50,8 @@ namespace MPTeste.Tests
             };
 
             // 2. Act & Assert (Ação e Verificação)
-            // Esperamos que o serviço lance InvalidOperationException
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.CriarAsync(request));
+            // Esperamos que o serviço lance BusinessRuleViolationException
+            var exception = await Assert.ThrowsAsync<Exception>(() => service.CriarAsync(request));
 
             Assert.Equal("Menores de idade só podem cadastrar despesas.", exception.Message);
         }
@@ -67,7 +70,8 @@ namespace MPTeste.Tests
             context.Categorias.Add(categoria);
             await context.SaveChangesAsync();
 
-            var service = new TransacaoService(context);
+            var mockLogger = new Mock<ILogger<TransacaoService>>();
+            var service = new TransacaoService(context, mockLogger.Object);
 
             var request = new TransacaoRequestDto
             {
@@ -97,7 +101,8 @@ namespace MPTeste.Tests
             context.Categorias.Add(categoria);
             await context.SaveChangesAsync();
 
-            var service = new TransacaoService(context);
+            var mockLogger = new Mock<ILogger<TransacaoService>>();
+            var service = new TransacaoService(context, mockLogger.Object);
             var request = new TransacaoRequestDto
             {
                 PessoaId = pessoa.Id,

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MPTeste.API.Data;
 using MPTeste.API.DTOs;
 using MPTeste.API.Enums;
@@ -25,7 +27,8 @@ namespace MPTeste.Tests
         {
             // Arrange
             var context = GetDatabaseContext();
-            var service = new PessoaService(context);
+            var mockLogger = new Mock<ILogger<PessoaService>>();
+            var service = new PessoaService(context, mockLogger.Object);
             var request = new PessoaRequestDto { Nome = "Maria", Idade = 25 };
 
             // Act
@@ -44,7 +47,8 @@ namespace MPTeste.Tests
         {
             // Arrange
             var context = GetDatabaseContext();
-            var service = new PessoaService(context);
+            var mockLogger = new Mock<ILogger<PessoaService>>();
+            var service = new PessoaService(context, mockLogger.Object);
 
             // 1. Criar Pessoa
             var pessoa = new Pessoa { Nome = "Investidor", Idade = 30 };
